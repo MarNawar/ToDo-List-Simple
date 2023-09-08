@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body{
+        font-family: Arial;
+      }
+      .todo-grid, .todo-input-grid{
+        display:grid;
+        grid-template-columns: 200px 150px 100px;
+        column-gap: 10px;
+        row-gap: 10px;
+        align-items: center;
+      }
+      .todo-input-grid{
+        margin-bottom: 10px;
+      }
+      .del-button{
+        background-color: darkred;
+        color: white;
+        width:60px;
+        height:35px;
+        font-size: 15px;
+        border:none;
+        cursor:pointer;
+      }
+      .add-button{
+        background-color: green;
+        color: white;
+        width:60px;
+        height:35px;
+        font-size: 15px;
+        border:none;
+        cursor:pointer;
+      }
+      .style-name, .style-date{
+        font-size: 15px;
+        padding: 6px 6px 6px 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <p>Todo List</p>
+
+    <div class="todo-input-grid">
+      <input placeholder="Todo Name" class="js-name style-name">
+      <input type="date" class="js-date style-date">
+      <button onclick="addTodo();" class="add-button">Add</button>
+    </div>
+    <div class="displayItems todo-grid"></div>
+    <script>
+
+      const TodoList = JSON.parse(localStorage.getItem('output'))||[]; 
+
+
+      
+
+      displayTodo();
+
+
+      function displayTodo(){
+        let displayHtml='';
+
+        for(let i=0;i<TodoList.length;i++){
+
+          const {name,date} = TodoList[i];
+
+          displayHtml+=`
+            <div class="style-name">${name}</div>
+            <div class="style-date">${date}</div>
+            <button class="del-button del-button-js">Delete</button>
+          `;
+        }
+        localStorage.setItem('output',JSON.stringify(TodoList));
+        document.querySelector(`.displayItems`).innerHTML=displayHtml;
+        document.querySelectorAll(`.del-button-js`).forEach((delButton,index)=>{
+          delButton.addEventListener('click',()=>{
+            TodoList.splice(index,1); 
+            displayTodo();
+          });
+        });
+      }
+
+      
+
+
+      function addTodo(){
+        const name = document.querySelector(`.js-name`).value;
+        const date = document.querySelector(`.js-date`).value;
+
+        // const todoObject={
+        //   name,
+        //   date
+        // };
+        //TodoList.push(todoObject);
+
+        TodoList.push({
+          name,
+          date
+        });
+
+        document.querySelector(`.js-name`).value='';
+        document.querySelector(`.js-date`).value='';
+
+        displayTodo();
+      }
+      
+    </script>
+  </body>
+</html>
